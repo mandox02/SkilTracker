@@ -1,6 +1,6 @@
 README
 
-Thank you for downloading ConsulTracker!
+Thank you for downloading SkilTracker!
 
 This Python application runs thanks to the following libraries:
 Openpyxl
@@ -32,4 +32,3 @@ To use the search feature:
     - Input the ID or Name, if searching for a specific candidate, or a skill to find all candidates with that skill.
     - To use the advanced search feature, click the advanced search button next to the Search Bar in the main window.
     - The advanced search needs at least one search term to display a list of all candidates that match the criteria.
-
