@@ -295,22 +295,6 @@ def retrieveinfobyid(id_query): #Finds existing info in the workbook by ID.
         return id_values, skills_values, found_cell_location
     else: return None, None, None
 
-def retrieveinfobyname(id_query): #Finds existing info in the workbook by ID.
-    found_cell_location = None
-    id_values = None
-    skills_values = None
-
-    for cell in ids["B"] or ids["C"]:
-        if cell.value == id_query:
-            found_cell_location = cell.row
-            print(f"found cell at A{found_cell_location}. Printing resource information:")
-            id_values = [cell.value for cell in ids[found_cell_location]]
-            skills_values = [cell.value for cell in skills[found_cell_location]]
-            break
-    if id_values != None and skills_values != None:
-        return id_values, skills_values, found_cell_location
-    else: return None, None, None
-
 def filterbyband(id_query):
     # For this one I proceeded to list all available entries by band match.
     found_cell_location = None
@@ -503,3 +487,29 @@ def validateinitialentry(cat1,cat2,cat3):
             return False, error_code
     
     return True, error_code
+
+def basesearch(term):
+    resultlist = []
+     # Check whether the search is for a name or ID
+    if any(char.isdigit() for char in term):
+        # Searching by ID match
+        for char in term:
+            if char.isalpha():
+                char.upper()
+        for cell in ids["A"]:
+            if term in cell.value:
+                resultlist.append(cell.value)
+    else: 
+        # Searching by name match
+        print("searching by name")
+        for cell in ids["B"]:
+
+            if term in cell.value.lower():
+                location = cell.row
+                resultlist.append(ids[f"A{location}"].value)
+        for cell in ids["C"]:
+            if term in cell.value.lower():
+                location = cell.row
+                if ids[f"A{location}"].value not in resultlist:
+                    resultlist.append(ids[f"A{location}"].value)
+    return resultlist
