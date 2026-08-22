@@ -29,6 +29,10 @@ band_entry = ctk.CTkEntry(app)
 sector_label = ctk.CTkLabel(app, text="Sector:")
 sector_entry = ctk.CTkEntry(app)
 skills_frame = ctk.CTkFrame(app)
+for i in range(3):
+    label = ctk.CTkLabel(skills_frame,text=f"Category {i+1}")
+    label.grid(row=0,column=i)
+
 cat1_entries = []
 cat2_entries = []
 cat3_entries = []
@@ -135,8 +139,14 @@ band_entry.grid(row=2,column=1)
 sector_label.grid(row=2,column=2)
 sector_entry.grid(row=2,column=3)
 
-new_button.grid(row=3,column=0)
-edit_button.grid(row=3,column=1)
-delete_button.grid(row=3,column=2)
+# skills_frame.place(anchor="center")
+app.grid_rowconfigure(3,minsize=40) 
+skills_frame.grid(row=4,column=1,columnspan=3)
+
+app.grid_rowconfigure(5,minsize=40) 
+
+new_button.grid(row=6,column=0)
+edit_button.grid(row=6,column=1)
+delete_button.grid(row=6,column=2)
 
 app.mainloop()
