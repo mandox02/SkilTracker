@@ -287,7 +287,7 @@ def retrieveinfobyid(id_query): #Finds existing info in the workbook by ID.
     for cell in ids["A"]:
         if cell.value == id_query:
             found_cell_location = cell.row
-            print(f"found cell at A{found_cell_location}. Printing resource information:")
+            print(f"found cell at A{found_cell_location}.")
             id_values = [cell.value for cell in ids[found_cell_location]]
             skills_values = [cell.value for cell in skills[found_cell_location]]
             break
@@ -476,11 +476,14 @@ def validateinitialentry(cat1,cat2,cat3):
     for category in [cat1,cat2,cat3]:
         print(category)
         if category != []:
-            print("Success.")
             for skill in category:
-                if any(char.isdigit() for char in skill) or skill == "":
+                if skill == "":
+                    skill = None
+                elif any(char.isdigit() for char in skill):
                     error_code = error_codes["10e"]
                     return False, error_code
+
+            print("Success.")
         else:
             print("This category is empty. Code cannot proceed.")
             error_code = error_codes["7e"]
