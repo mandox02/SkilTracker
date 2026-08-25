@@ -32,3 +32,13 @@ To use the search feature:
     - Input the ID or Name, if searching for a specific candidate, or a skill to find all candidates with that skill.
     - To use the advanced search feature, click the advanced search button next to the Search Bar in the main window.
     - The advanced search needs at least one search term to display a list of all candidates that match the criteria.
+
+Changelog:
+v0.1: Start of the project with mostly complete main script.
+v0.5 (LATEST):
+    - Main window now has full functionality!
+    - Search by ID or name is fully functional
+    - Create, Edit and Delete all work as intended
+    - Warning and confirmation pop ups all work as intended.
+    - Fixed a bug where the search results frame shrank every consecutive button.
+    - Fixed a bug that caused errors to not show up.
