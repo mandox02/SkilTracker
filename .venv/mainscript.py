@@ -495,6 +495,8 @@ def basesearch(term):
     resultlist = []
      # Check whether the search is for a name or ID
     if any(char.isdigit() for char in term):
+        if char.isalpha():
+            char.upper()
         # Searching by ID match
         for char in term:
             if char.isalpha():
@@ -515,4 +517,14 @@ def basesearch(term):
                 location = cell.row
                 if ids[f"A{location}"].value not in resultlist:
                     resultlist.append(ids[f"A{location}"].value)
+    return resultlist
+
+def retrieveall(): #Finds all registered IDs and returns them to the UI to display.
+    resultlist = []
+
+    for cell in ids["A"]:
+        location = cell.row
+        if location != 1:
+            resultlist.append(ids[f"A{location}"].value)
+
     return resultlist

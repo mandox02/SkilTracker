@@ -3,12 +3,22 @@ import mainscript as main
 import string
 
 app = ctk.CTk()
-app.title("SkilTracker v0.5")
-app.geometry("600x500")
+app.title("SkilTracker v0.6")
+app.geometry("600x500+100+100")
 app.resizable(False,False)
 app_x = app.winfo_x()
 app_y = app.winfo_y()
-app.update_idletasks()
+
+def temptimer():
+    global app_x
+    global app_y
+    app_x = app.winfo_x()
+    app_y = app.winfo_y()
+    app.update()
+    print(f"X: {app_x}, Y: {app_y}")
+    print(current_mode)
+
+    app.after(1000,temptimer)
 
 current_mode = "idle"
 viewing_id = None
@@ -66,24 +76,28 @@ def basicsearch():
     name = None
     names = []
     ids = []
-    # Return error for invalid characters or blank search
-    if term == "":
-        error_code = main.error_codes["2"]
-        make_popup(error_code)
-        return False
 
-    print("entry is not empty, proceed")
-    
-    if any(char for char in term if char in string.punctuation):
-        error_code = main.error_codes["3a"]
-        make_popup(error_code)
-        return False
+    if term == "all":
+        id_list = main.retrieveall()
+    else:
+        # Return error for invalid characters or blank search
+        if term == "":
+            error_code = main.error_codes["2"]
+            make_popup(error_code)
+            return False
 
-    print("entry has no special characters, proceed")
+        print("entry is not empty, proceed")
+        
+        if any(char for char in term if char in string.punctuation):
+            error_code = main.error_codes["3a"]
+            make_popup(error_code)
+            return False
 
-    # Check whether the search is for a name or ID and find all possible entries. 
-    id_list = main.basesearch(term)
-    print("got id_list, printing: ", id_list)
+        print("entry has no special characters, proceed")
+
+        # Check whether the search is for a name or ID and find all possible entries. 
+        id_list = main.basesearch(term)
+        print("got id_list, printing: ", id_list)
 
     if id_list == []:
         error_code = main.error_codes["3"]
@@ -134,6 +148,7 @@ def display_info(item):
     set_field(name_entry, id_list[1])
     set_field(ln_entry, id_list[2])
     band_dropdown.set(str(id_list[3]))
+    band_dropdown.configure(state="disabled")
     set_field(sector_entry, id_list[4])
 
     cat1_skills = skills_list[1:3]
@@ -156,6 +171,7 @@ def clear_all(flag):
     band_dropdown.set("")
     if flag == True:
         band_dropdown.configure(state="normal")
+    else: band_dropdown.configure(state="disabled")
     set_field(sector_entry, None, flag)
     
     cat1_skills = [None,None]
@@ -250,15 +266,14 @@ def cancel():
     search_button.configure(state="normal",fg_color="#5550DE")
     advsearch_button.configure(state="normal",fg_color="#5550DE")
     delete_button.configure(text="Delete",command=ask_delete)
+    edit_button.configure(text="Edit",command=edit_entry)
     if current_mode == "new":
         clear_all(False)
         set_mode("idle")
-        edit_button.configure(text="Edit",command=edit_entry,state="disabled")
+        edit_button.configure(state="disabled")
         delete_button.configure(state="disabled",fg_color="#925C54")
     elif current_mode == "edit":
-        display_info(viewing_id)
-        edit_button.configure(text="Edit",command=edit_entry)
-        delete_button.configure(state="normal",text="Delete",command=ask_delete,fg_color="#DE503A")
+        display_info(viewing_id) 
 
 def make_popup(message,warning=True):
     global popup
@@ -272,17 +287,19 @@ def make_popup(message,warning=True):
     y = app_y + 50
     popup.geometry(f'400x200+{x}+{y}')
     popup.resizable(False,False)
-    label = ctk.CTkLabel(popup,text=message,anchor="center")
+    label = ctk.CTkLabel(popup,text=message)
     cancelbtn = ctk.CTkButton(popup,command=lambda: popup.destroy())
     confirmbtn = ctk.CTkButton(popup,text="Confirm",command=confirm)
-    label.pack()
+    emptylabel = ctk.CTkLabel(popup,text="")
+    label.pack(anchor="n")
+    emptylabel.pack(anchor="center")
     if warning == True:
         cancelbtn.configure(text="OK")
         cancelbtn.pack(anchor="s")
     else:
         cancelbtn.configure(text="Cancel")
-        cancelbtn.pack(anchor="s")
-        confirmbtn.pack(anchor="s")
+        cancelbtn.pack(side="left")
+        confirmbtn.pack(side="right")
 
 def ask_delete():
     make_popup("Are you sure you want to delete this candidate?",False)
@@ -305,6 +322,22 @@ def confirm():
         advsearch_button.configure(state="normal",fg_color="#5550DE")
         make_popup("Candidate deleted.")
 
+def adv_search():
+    global popup
+    popup = ctk.CTkToplevel(app)
+    popup.lift()
+    popup.grab_set()
+    popup.title("Advanced Search")
+    x = app_x + 100
+    y = app_y + 50
+    popup.geometry(f'400x400+{x}+{y}')
+    popup.resizable(False,False)
+    label = ctk.CTkLabel(popup,text="Find a candidate by...")
+    cancelbtn = ctk.CTkButton(popup,text="Cancel",command=lambda: popup.destroy())
+    label.pack(anchor="nw")
+    skill_label = ctk.CTkLabel(popup,text="Skill:")
+    skill = ctk.CTkEntry(popup)
+    cancelbtn.pack(anchor="sw")
 
 
 # delete color when enabled should be fg_color="#DE503A"
@@ -314,7 +347,7 @@ new_button = ctk.CTkButton(app, text="New",command=new_entry,fg_color="#4DAB3A")
 edit_button = ctk.CTkButton(app, text="Edit",command=edit_entry,fg_color="#46753D",state="disabled")
 delete_button = ctk.CTkButton(app, text="Delete",command=ask_delete,fg_color="#925C54",state="disabled")
 search_button = ctk.CTkButton(app, text="Search",command=basicsearch,fg_color="#5550DE")
-advsearch_button = ctk.CTkButton(app, text="Advanced Search...",command=lambda: print("Advanced search requested."),fg_color="#5550DE")
+advsearch_button = ctk.CTkButton(app, text="Advanced Search...",command=adv_search,fg_color="#5550DE")
 
 # Activation goes here
 searchbyid_label.grid(row=0,column=0)
@@ -341,5 +374,7 @@ app.grid_rowconfigure(5,minsize=40)
 new_button.grid(row=6,column=0)
 edit_button.grid(row=6,column=1)
 delete_button.grid(row=6,column=2)
+
+temptimer()
 
 app.mainloop()

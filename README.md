@@ -42,3 +42,8 @@ v0.5 (LATEST):
     - Warning and confirmation pop ups all work as intended.
     - Fixed a bug where the search results frame shrank every consecutive button.
     - Fixed a bug that caused errors to not show up.
+v0.6 (LATEST):
+    - Fixed a styling error in the confirmation popup when deleting a candidate. Appearance is now as intended.
+    - Began work on advanced search window.
+    - added a cheat code to the ID search: type "all" to view all entries.
+    - Fixed a bug where the band dropdown remains editable when cancelling an edit operation.
