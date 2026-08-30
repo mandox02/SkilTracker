@@ -24,9 +24,17 @@ current_mode = "idle"
 viewing_id = None
 resultlist = None
 location = None
-valid_bands = [str(n) for n in range(1,11)]
+valid_bands = [str(n) for n in range(0,11)]
+existing_bands = [str(n) for n in main.existing_bands]
+existing_sectors = [str(n) for n in main.existing_sectors]
 error_code = main.error_codes["0"]
 popup = None
+
+skillf = None
+catf = None
+bandf = None
+sectorf = None
+catf_toggle = None
 
 # MAIN WINDOW
 
@@ -138,6 +146,8 @@ def selection(item):
     global viewing_id
     viewing_id = item
     resultlist.destroy()
+    if popup != None:
+        popup.destroy()
     display_info(item)
 
 def display_info(item):
@@ -193,6 +203,8 @@ def save_to_excel():
     print(ln)
     try:
         band = int(band_dropdown.get())
+        if band == 0:
+            band = ""
     except ValueError:
         band = ""
     print(band)
@@ -323,21 +335,105 @@ def confirm():
         make_popup("Candidate deleted.")
 
 def adv_search():
+
     global popup
+    global skillf
+    global catf
+    global bandf
+    global sectorf
+    global catf_toggle
+    category = [str(n) for n in range(1,4)]
     popup = ctk.CTkToplevel(app)
     popup.lift()
     popup.grab_set()
     popup.title("Advanced Search")
-    x = app_x + 100
+    x = app_x + 150
     y = app_y + 50
-    popup.geometry(f'400x400+{x}+{y}')
+    popup.geometry(f'300x400+{x}+{y}')
     popup.resizable(False,False)
     label = ctk.CTkLabel(popup,text="Find a candidate by...")
+    searchbtn = ctk.CTkButton(popup,text="Search",command=advsearch_exe)
     cancelbtn = ctk.CTkButton(popup,text="Cancel",command=lambda: popup.destroy())
-    label.pack(anchor="nw")
-    skill_label = ctk.CTkLabel(popup,text="Skill:")
-    skill = ctk.CTkEntry(popup)
-    cancelbtn.pack(anchor="sw")
+    label.grid(row=0,column=0,columnspan=2)
+
+    skillf_label = ctk.CTkLabel(popup,text="Skill:")
+    skillf = ctk.CTkEntry(popup)
+    catf_label = ctk.CTkLabel(popup,text="Category:")
+    catf_toggle = ctk.CTkCheckBox(popup,text="")
+    catf = ctk.CTkOptionMenu(popup,values=category,width=50)
+    bandf_label = ctk.CTkLabel(popup,text="Band:")
+    bandf = ctk.CTkOptionMenu(popup,values=existing_bands)
+    sectorf_label = ctk.CTkLabel(popup,text="Sector:")
+    sectorf = ctk.CTkOptionMenu(popup,values=existing_sectors)
+
+    global resultlist
+    resultlist= ctk.CTkScrollableFrame(popup)
+
+    skillf_label.grid(row=1,column=0)
+    skillf.grid(row=1,column=1)
+    catf_label.grid(row=2,column=0)
+    catf_toggle.grid(row=2,column=1)
+    catf.grid(row=2,column=1)
+    bandf_label.grid(row=3,column=0)
+    bandf.grid(row=3,column=1)
+    sectorf_label.grid(row=4,column=0)
+    sectorf.grid(row=4,column=1)
+    searchbtn.grid(row=5,column=0)
+    cancelbtn.grid(row=5,column=1)
+    resultlist.grid(row=6,column=0,columnspan=2)
+
+def advsearch_exe():
+
+    skill = skillf.get()
+    if catf_toggle.get() == 1:
+        cat = catf.get()
+    else: cat = ""
+    try:
+        band = int(bandf.get())
+        if band == 0:
+            band = ""
+    except ValueError:
+        band = ""
+
+    if sectorf.get() == "0":
+        sector = ""
+    else: sector = sectorf.get()
+
+    id = None
+    name = None
+    names = []
+    ids = []
+
+    id_list, suberror = main.advancedsearch(skill,cat,band,sector)
+
+    print(id_list)
+    id_list = [item for sublist in id_list for item in sublist]
+    print(id_list)
+
+    if suberror != main.error_codes["0"]:
+        make_popup(suberror)
+        return False
+
+    for item in id_list:
+        list1, list2, location = main.retrieveinfobyid(item)
+        print(list1)
+        print(list2)
+        print(location)
+        name = list1[1] + " " + list1[2]
+        id = list1[0]
+        names.append(name)
+        ids.append(id)
+
+    # Show the list to the user and wait for it to receive a response (Yes, copied from above)
+    global resultlist
+    entrycount = 0
+
+    for index, item in enumerate(ids):
+        selectbtn = ctk.CTkButton(resultlist, text=f"{ids[entrycount]} | {names[entrycount]}",command=lambda item=item: selection(item))
+        selectbtn.grid(row=index, pady=5, sticky="ew")
+        entrycount += 1
+
+
 
 
 # delete color when enabled should be fg_color="#DE503A"

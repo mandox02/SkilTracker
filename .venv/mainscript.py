@@ -45,6 +45,25 @@ error_codes = {
     "10e": "Invalid characters (Skill)",
 }
 
+# Defining custom values
+existing_bands = [0]
+existing_sectors = [0]
+
+for cell in ids['D']:
+    if cell.row != 1:
+        if cell.value not in existing_bands:
+            existing_bands.append(cell.value)
+
+print(existing_bands)
+
+for cell in ids['E']:
+    if cell.row != 1:
+        if cell.value not in existing_sectors:
+            existing_sectors.append(cell.value)
+
+print(existing_sectors)
+
+
 def saveinfo(candidateid, candidatename, candidateln, band, sector, cat1, cat2, cat3):
     # input to define the values goes here
     error_code = error_codes["0"]

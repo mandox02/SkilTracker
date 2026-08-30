@@ -47,3 +47,4 @@ v0.6 (LATEST):
     - Began work on advanced search window.
     - added a cheat code to the ID search: type "all" to view all entries.
     - Fixed a bug where the band dropdown remains editable when cancelling an edit operation.
+    - Identified a bug where the skills get saved even if at least one category is empty.
