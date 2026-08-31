@@ -380,12 +380,12 @@ def filterbyskill(id_query, category_check=""):
     found_entries = []
     found_skill_categories = []
     query_count = 0
-    error_code = "0"
+    error_code = error_codes["0"]
 
     if not any(char.isdigit() for char in id_query) and id_query != "":
         for column in skills:
             for cell in column:
-                if cell.value == id_query:
+                if cell.value != None and id_query.lower() in cell.value.lower():
                     found_cell_location = cell.row
                     category = getskillcategory(cell.column)
                     if category == category_check or category_check == "":
@@ -468,6 +468,7 @@ def advancedsearch(skill="",category="",band="",sector=""):
         else:
             final_results = active_filters
             search_type = "Standard"
+            final_results = [item for sublist in final_results for item in sublist]
 
         if final_results == []:
             final_error_code = error_codes["3"]
@@ -494,7 +495,7 @@ def validateinitialentry(cat1,cat2,cat3):
     error_code = error_codes["0"]
     for category in [cat1,cat2,cat3]:
         print(category)
-        if category != []:
+        if any(skill != "" for skill in category):
             for skill in category:
                 if skill == "":
                     skill = None

@@ -3,7 +3,7 @@ import mainscript as main
 import string
 
 app = ctk.CTk()
-app.title("SkilTracker v0.6")
+app.title("SkilTracker v0.7")
 app.geometry("600x500+100+100")
 app.resizable(False,False)
 app_x = app.winfo_x()
@@ -15,8 +15,6 @@ def temptimer():
     app_x = app.winfo_x()
     app_y = app.winfo_y()
     app.update()
-    print(f"X: {app_x}, Y: {app_y}")
-    print(current_mode)
 
     app.after(1000,temptimer)
 
@@ -289,6 +287,10 @@ def cancel():
 
 def make_popup(message,warning=True):
     global popup
+
+    if popup != None:
+        popup.destroy()
+
     popup = ctk.CTkToplevel(app)
     popup.lift()
     popup.grab_set()
@@ -406,10 +408,7 @@ def advsearch_exe():
 
     id_list, suberror = main.advancedsearch(skill,cat,band,sector)
 
-    print(id_list)
-    id_list = [item for sublist in id_list for item in sublist]
-    print(id_list)
-
+    print(suberror)
     if suberror != main.error_codes["0"]:
         make_popup(suberror)
         return False

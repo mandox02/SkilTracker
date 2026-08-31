@@ -35,7 +35,7 @@ To use the search feature:
 
 Changelog:
 v0.1: Start of the project with mostly complete main script.
-v0.5 (LATEST):
+v0.5:
     - Main window now has full functionality!
     - Search by ID or name is fully functional
     - Create, Edit and Delete all work as intended
@@ -44,7 +44,15 @@ v0.5 (LATEST):
     - Fixed a bug that caused errors to not show up.
 v0.6 (LATEST):
     - Fixed a styling error in the confirmation popup when deleting a candidate. Appearance is now as intended.
-    - Began work on advanced search window.
+    - Advanced search window now works.
     - added a cheat code to the ID search: type "all" to view all entries.
     - Fixed a bug where the band dropdown remains editable when cancelling an edit operation.
     - Identified a bug where the skills get saved even if at least one category is empty.
+v0.7 (LATEST):
+    - The advanced search window now displays all existing bands and sectors in the excel.
+    - Began bug testing, and here are the bugs I found in my testing:
+    - Fixed a bug where the skills get saved even if at least one category is empty.
+    - Fixed the skills searching, no longer are they only exact (and case sensitive) matches.
+    - Fixed a bug where the advanced search popup doesn't get destroyed after an error has been produced, and won't make new error popups either.
+    - Fixed a bug where clicking a result won't destroy the advanced search window if another search overwrote the previous result list.
+    - Fixed a bug where "No results" error popup doesn't occur in the advanced search.
