@@ -5,9 +5,16 @@ from openpyxl.utils import column_index_from_string
 from openpyxl.utils import get_column_letter
 from collections import Counter
 import string
+import sys
+import os
 
-
-wb = openpyxl.load_workbook('skiltracker-main.xlsx', data_only=True)
+if getattr(sys, 'frozen',False):
+    #Pyinstaller build executable
+    app_dir = os.path.dirname(sys.executable)
+else:
+    #for when it's on a workbench
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+wb = openpyxl.load_workbook(os.path.join(app_dir, 'skiltracker-main.xlsx'), data_only=True)
 
 ids = wb['ID']
 skills = wb['Skills']
